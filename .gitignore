@@ -1,0 +1,43 @@
+# ---- Data: NEVER upload patient or ADNI data ----
+data/*
+!data/README.md
+*.nii
+*.nii.gz
+*.mgz
+*.dcm
+*.img
+*.hdr
+*.npy
+*.npz
+*.h5
+*.hdf5
+
+# ---- Trained model weights (large; trained on restricted data) ----
+*.pt
+*.pth
+*.ckpt
+*.keras
+saved_models/
+checkpoints/
+
+# ---- Secrets ----
+.env
+*.key
+credentials*
+
+# ---- Python ----
+__pycache__/
+*.pyc
+venv/
+.venv/
+.ipynb_checkpoints/
+
+# ---- System ----
+.DS_Store
+Thumbs.db
+
+# ---- Outputs that should not be uploaded ----
+models/
+results/synthetic/
+*.egg-info/
+.pytest_cache/

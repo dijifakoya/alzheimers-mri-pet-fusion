@@ -1,0 +1,70 @@
+# Default configuration for experiments on ADNI data.
+# Every run saves a copy of the settings it used (config_used.yaml) next to its results.
+
+seed: 42
+deterministic: false        # true = bit-for-bit repeatable on CPU, but slower
+
+paths:
+  raw_dir: data/raw                 # see data/README.md for the expected layout
+  manifest: data/manifest.csv       # built by: python -m mripet.io
+  cache_dir: data/processed         # cast mosaics are cached here (not uploaded)
+  results_dir: results
+  models_dir: models                # trained models (not uploaded)
+
+data:
+  class_dirs: {nMCIC: 0, MCIC: 1}   # 0 = stable MCI, 1 = converted to AD within 36 months
+  modality_dirs: {mri: MRI, pet: PET}
+  pair_pattern: '(\d{3}_S_\d{4})'   # ADNI subject ID used to pair MRI and PET files
+  expected_shape: [91, 109, 91]     # MNI152 2 mm space, SimpleITK (z, y, x) order
+  resample_if_needed: false
+  use_cache: true
+
+preprocessing:
+  mri: {method: clip, vmin: 0, vmax: 400}   # thesis setting for T1-weighted MRI
+  pet: {method: minmax}                     # per-scan min-max for FDG-PET
+
+casting:
+  overrides: {}     # e.g. {5: {top: 70, step: 2}} to change slice selection for a grid size
+
+experiment:
+  modality: fusion            # mri | pet | fusion
+  fusion_level: feature       # image | feature | decision (used when modality = fusion)
+  image_fusion_method: channels   # channels | average | weighted (used when fusion_level = image)
+  view: coronal               # axial | coronal | sagittal
+  grid: 6                     # 1–7 (n x n slices per mosaic)
+
+model:
+  architecture: cnn           # cnn (thesis network) | vgg16 | resnet101v2 | resnet50v2 | densenet121 | ...
+  filters: [16, 32, 32, 64, 64]
+  kernel_size: 2
+  l2: 0.01
+  dense_units: 128
+  dropout: 0.3
+  pretrained_weights: imagenet
+  trainable_backbone: false
+
+training:
+  epochs: 100
+  batch_size: 8
+  learning_rate: 0.0001
+  decay_steps: 100000
+  decay_rate: 0.96
+  monitor: val_auc
+  patience: 30
+  augment: true
+  rotation_angles: [-10, -5, 5, 10]
+  verbose: 2
+
+evaluation:
+  threshold: youden          # youden (chosen on validation data) or a number such as 0.5
+
+split:
+  test_fraction: 0.15
+  val_fraction: 0.15
+  cv_folds: 5
+
+grid_search:                  # used by: python -m mripet.run_grid
+  modalities: [mri, pet, fusion]
+  views: [axial, coronal, sagittal]
+  grids: [3, 4, 5, 6, 7]
+  fusion_levels: [image, feature, decision]

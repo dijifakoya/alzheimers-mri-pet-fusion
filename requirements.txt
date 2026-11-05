@@ -1,0 +1,11 @@
+# Core dependencies (also listed in pyproject.toml).
+# Install everything with:  pip install -e ".[dev]"
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+scikit-learn>=1.3
+matplotlib>=3.7
+pyyaml>=6.0
+SimpleITK>=2.3
+tensorflow>=2.16
+# Apple Silicon Macs (optional GPU acceleration):  pip install tensorflow-metal

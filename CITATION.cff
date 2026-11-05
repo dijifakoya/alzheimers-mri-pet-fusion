@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper below."
+title: "Image Casting and Fusion of MRI and PET for Early Alzheimer's Disease Prediction"
+authors:
+  - family-names: Fakoya
+    given-names: Adediji A.
+    # orcid: "https://orcid.org/0000-0000-0000-0000"   # TODO: add your ORCID
+preferred-citation:
+  type: article
+  title: "A Novel Image Casting and Fusion for Identifying Individuals at Risk of Alzheimer's Disease Using MRI and PET Imaging"
+  authors:
+    - family-names: Fakoya
+      given-names: Adediji A.
+    - family-names: Parkinson
+      given-names: Simon
+  journal: "IEEE Access"
+  year: 2024
+  doi: "10.1109/ACCESS.2024.3412850"

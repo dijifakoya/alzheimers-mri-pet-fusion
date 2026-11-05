@@ -1,0 +1,33 @@
+# Quick end-to-end check on synthetic data (no ADNI access needed).
+#   python -m mripet.synthetic --out data/synthetic/raw --n-per-class 30
+#   python -m mripet.io --config configs/synthetic.yaml
+#   python -m mripet.train --config configs/synthetic.yaml
+base: default.yaml
+
+paths:
+  raw_dir: data/synthetic/raw
+  manifest: data/synthetic/manifest.csv
+  cache_dir: data/synthetic/processed
+  results_dir: results/synthetic
+  models_dir: models/synthetic
+
+data:
+  pair_pattern: '(\d{3}_S_\d{4})'
+
+experiment:
+  view: coronal
+  grid: 3
+
+training:
+  epochs: 40
+  batch_size: 8
+  patience: 12
+
+split:
+  cv_folds: 3
+
+grid_search:
+  modalities: [mri, fusion]
+  views: [coronal]
+  grids: [3]
+  fusion_levels: [feature]
