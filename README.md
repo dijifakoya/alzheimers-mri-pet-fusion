@@ -209,7 +209,7 @@ Data used in this work were obtained from the Alzheimer's Disease Neuroimaging I
 ## Author
 
 **Dr Adediji Fakoya, PhD, FHEA** — data scientist and lecturer in computing
-[LinkedIn](TODO) · [Google Scholar](TODO) · adediji.fakoya@gmail.com
+[LinkedIn](https://www.linkedin.com/in/diji-fakoya-phd-b55712122/) · [Google Scholar](https://scholar.google.com/citations?user=-O-U2wUAAAAJ&hl=en) · adediji.fakoya@gmail.com
 
 ## Licence
 
