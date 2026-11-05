@@ -9,7 +9,7 @@ This repository is a clean, tested re-implementation of the code from the PhD re
 | `MRI/PET ... Conversion Data Augmentation` | Random rotation (−10°, −5°, 5°, 10°) during training | `augment.py` (`training.augment`) |
 | `MRI/PET Fine Tuning`, `MRI/PET and Machine Learning` | Pre-trained networks (VGG16, ResNet, DenseNet, Xception, MobileNet) | `models.py` (`model.architecture`) |
 | `MRI Axial Test` | Test-set evaluation, confusion matrices, ROC curves | `metrics.py` |
-| Image fusion results | MRI–PET fusion | `fusion.py`, `models.py` (image-, feature- and decision-level fusion) |
+| Image fusion (spatial-domain and feature-level) | MRI–PET fusion | `fusion.py` (6-channel spatial-domain fusion), `models.py` (feature-level fusion with one network per modality) |
 
 ## Kept exactly as in the thesis
 - Slice selection for each grid size (`GRID_PRESETS` in `casting.py`) and the column-by-column mosaic layout. The test `tests/test_casting.py` checks the new code gives identical output to the original loop implementation for every view and grid size.
@@ -26,6 +26,7 @@ This repository is a clean, tested re-implementation of the code from the PhD re
 - **Grad-CAM explanations** and a **synthetic dataset** for testing without ADNI access.
 - Single-channel mosaics (the original repeated the grey image three times; this is only needed for pre-trained networks, which the code handles automatically).
 
-## Please check
-- **Fusion level:** the original fusion notebook was not available, so all three standard fusion levels are implemented. Set `experiment.fusion_level` to the one described in the paper.
-- **Pre-registration steps** (software and template used to produce 91 × 109 × 91 volumes) should be added to `data/README.md`.
+## Notes
+- **Fusion:** the original fusion notebook was not available. It was rebuilt from the paper: spatial-domain fusion stacks the 3-channel MRI and 3-channel PET mosaics into one 6-channel image for a single 2D CNN (94%); feature-level fusion joins features from two networks (best: ResNet101V2 + ResNet101, 85%). Decision-level fusion is included as an extra option.
+- **CNN settings:** the notebooks use a 2 × 2 kernel and filters 16-32-32-64-64 followed by a 128-unit dense layer; the paper text describes a 3 × 3 kernel. The code follows the notebooks by default; set `model.kernel_size: 3` in the config to use the paper's description.
+- **Pre-processing** (FSL BET and FLIRT to MNI152 2 mm) was done before these notebooks and is documented in `data/README.md`.

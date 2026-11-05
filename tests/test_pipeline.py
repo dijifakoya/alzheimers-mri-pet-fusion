@@ -38,7 +38,8 @@ def test_manifest(tiny_cfg):
 
 @pytest.mark.parametrize("args", [
     ["--modality", "mri"],
-    ["--modality", "fusion", "--fusion-level", "image"],
+    ["--modality", "fusion", "--fusion-level", "image"],  # six-channel spatial fusion (paper default)
+    ["--modality", "fusion", "--fusion-level", "image", "--image-fusion-method", "sum"],
     ["--modality", "fusion", "--fusion-level", "feature"],
     ["--modality", "fusion", "--fusion-level", "decision"],
 ])

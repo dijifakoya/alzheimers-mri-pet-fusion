@@ -23,6 +23,9 @@ def test_ensure_shape():
 def test_fusion_methods():
     a = np.ones((2, 8, 8, 1), np.float32)
     b = np.zeros((2, 8, 8, 1), np.float32)
+    assert fuse_images(a, b, "six_channel").shape == (2, 8, 8, 6)
+    assert fuse_images(a, b, "concat").shape == (2, 8, 8, 2)
+    assert np.allclose(fuse_images(a, b, "sum"), 1.0)
     assert fuse_images(a, b, "channels").shape == (2, 8, 8, 3)
     assert np.allclose(fuse_images(a, b, "average"), 0.5)
 

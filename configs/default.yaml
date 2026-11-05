@@ -26,15 +26,16 @@ preprocessing:
 casting:
   overrides: {}     # e.g. {5: {top: 70, step: 2}} to change slice selection for a grid size
 
-experiment:
+experiment:                   # defaults reproduce the paper's best model (94% accuracy)
   modality: fusion            # mri | pet | fusion
-  fusion_level: feature       # image | feature | decision (used when modality = fusion)
-  image_fusion_method: channels   # channels | average | weighted (used when fusion_level = image)
-  view: coronal               # axial | coronal | sagittal
+  fusion_level: image         # image (spatial-domain, as in the paper) | feature | decision
+  image_fusion_method: six_channel   # six_channel (paper) | concat | sum | channels | average | weighted
+  view: coronal               # axial | coronal | sagittal (coronal 6 x 6 was best for MRI and PET)
   grid: 6                     # 1–7 (n x n slices per mosaic)
 
 model:
-  architecture: cnn           # cnn (thesis network) | vgg16 | resnet101v2 | resnet50v2 | densenet121 | ...
+  architecture: cnn           # cnn (thesis network) | vgg16 | resnet101 | resnet101v2 | resnet50v2 | densenet121 | ...
+  branch_architectures: null  # feature/decision fusion only, e.g. [resnet101v2, resnet101] as in the paper
   filters: [16, 32, 32, 64, 64]
   kernel_size: 2
   l2: 0.01
@@ -67,4 +68,4 @@ grid_search:                  # used by: python -m mripet.run_grid
   modalities: [mri, pet, fusion]
   views: [axial, coronal, sagittal]
   grids: [3, 4, 5, 6, 7]
-  fusion_levels: [image, feature, decision]
+  fusion_levels: [image, feature]

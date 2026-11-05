@@ -30,4 +30,4 @@ grid_search:
   modalities: [mri, fusion]
   views: [coronal]
   grids: [3]
-  fusion_levels: [feature]
+  fusion_levels: [image, feature]

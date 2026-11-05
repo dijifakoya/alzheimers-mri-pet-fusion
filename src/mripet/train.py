@@ -133,7 +133,7 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--grid", type=int, choices=range(1, 8))
     parser.add_argument("--fusion-level", dest="fusion_level", choices=["image", "feature", "decision"])
     parser.add_argument("--image-fusion-method", dest="image_fusion_method",
-                        choices=["channels", "average", "weighted"])
+                        choices=["six_channel", "concat", "sum", "channels", "average", "weighted"])
 
 
 def main(argv: Optional[List[str]] = None) -> Dict[str, Any]:

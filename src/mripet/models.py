@@ -9,6 +9,8 @@ from keras import layers
 PRETRAINED = {
     "vgg16": keras.applications.VGG16,
     "vgg19": keras.applications.VGG19,
+    "resnet50": keras.applications.ResNet50,
+    "resnet101": keras.applications.ResNet101,
     "resnet50v2": keras.applications.ResNet50V2,
     "resnet101v2": keras.applications.ResNet101V2,
     "densenet121": keras.applications.DenseNet121,
@@ -44,6 +46,8 @@ def _backbone_features(inp, name: str, mcfg: Dict[str, Any], prefix: str = ""):
     x = inp
     if inp.shape[-1] == 1:  # pretrained networks expect 3 channels
         x = layers.Concatenate(name=f"{prefix}to_rgb")([inp, inp, inp])
+    elif inp.shape[-1] != 3:  # e.g. fused 2- or 6-channel images: learn a 1x1 mapping to 3 channels
+        x = layers.Conv2D(3, 1, name=f"{prefix}to_rgb")(inp)
     x = layers.Rescaling(255.0, name=f"{prefix}to_255")(x)
     base = PRETRAINED[name](include_top=False, weights=mcfg.get("pretrained_weights", "imagenet"),
                             input_shape=tuple(x.shape[1:]))
@@ -64,8 +68,11 @@ def build_two_branch(input_shape: Tuple[int, int, int], mcfg: Dict[str, Any], le
     """Separate MRI and PET branches fused at the feature or decision level."""
     mri = keras.Input(shape=input_shape, name="mri")
     pet = keras.Input(shape=input_shape, name="pet")
-    f_mri = _backbone_features(mri, mcfg["architecture"], mcfg, prefix="mri_")
-    f_pet = _backbone_features(pet, mcfg["architecture"], mcfg, prefix="pet_")
+    # The paper's best feature-level model used a different pre-trained network per branch
+    # (ResNet101V2 for MRI, ResNet101 for PET); set model.branch_architectures to do the same.
+    arch_mri, arch_pet = mcfg.get("branch_architectures") or [mcfg["architecture"]] * 2
+    f_mri = _backbone_features(mri, arch_mri, mcfg, prefix="mri_")
+    f_pet = _backbone_features(pet, arch_pet, mcfg, prefix="pet_")
     if level == "feature":
         fused = layers.Concatenate(name="feature_fusion")([f_mri, f_pet])
         out = classifier_head(fused, mcfg["dense_units"], mcfg["dropout"], mcfg["l2"])
